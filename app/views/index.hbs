@@ -14,7 +14,12 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      {{#each items}}
+      <li>{{msg}}</li>
+      {{/each}}
+
+    </ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -22,7 +27,6 @@
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   var socket = io();
-   console.log( {{ myVar }} );
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
