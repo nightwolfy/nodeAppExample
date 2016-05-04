@@ -8,7 +8,12 @@
 var http = require('http');
 var port = 1337;
 var express = require('express'),
+//pug = require('pug'),
 todos = require('./app/routes/todos.js');
+var hbs = require('hbs');
+var expressHbs = require('handlebars');
+
+
 
 var app = express();
 var mongo = require('mongodb');
@@ -18,16 +23,39 @@ var Server = mongo.Server,
     BSON = mongo.BSONPure;
 
 var server = new Server('localhost', 27017, {auto_reconnect: true});
-db = new Db('todos', server);
+db = new Db('chat', server);
 
 
 /*app.configure(function () {
     app.use(express.logger('dev'));     // 'default', 'short', 'tiny', 'dev' 
     app.use(express.bodyParser());
 });*/
+app.set('views',__dirname + '/app/views');
+/*app.set('view engine','pug');*/
+//app.engine('hbs', expressHbs({extname:'hbs', defaultLayout:'main.hbs'}));
+app.set('view engine', 'hbs');
+
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/app/views/index.html');
-  
+   db.collection('chat', function(err, collection) {
+        collection.find().toArray(function(err, items) {
+           console.log(items);
+           res.render(__dirname + '/app/views/index', { items: (items) });
+        });
+    });
+  //res.sendFile(__dirname + '/app/views/index.html');
+//io.sockets.emit('chat message','msg');
+/*var msg = {msg:'msg'};
+  db.collection('chat').insert(msg,{safe:true}, function(err,result){
+            //if (err) throw err;
+            if (err) {
+                  console.log(err);
+                   // res.send({'error':'An error has occurred'});
+                } else {
+                    console.log('Success: ' + JSON.stringify(result));
+                //    res.send(result[0]);
+                }
+           // db.close();
+          });*/
 });
 app.get('/todos', todos.findAll);
 app.get('/todos/:id', todos.findById);
@@ -42,19 +70,18 @@ io.on('connection', function(socket){
    socket.on('chat message', function(msg){
     io.emit('chat message', msg);
     console.log(msg);
-		   var wine = {msg:msg};
-		    console.log('Adding todos: ' + JSON.stringify(wine));
-			db.collection('chat').insert(wine,{safe:true}, function(err,result){
+		  var msg = {msg:msg};
+  db.collection('chat').insert(msg,{safe:true}, function(err,result){
             //if (err) throw err;
             if (err) {
-		            	console.log(err);
-		               // res.send({'error':'An error has occurred'});
-		            } else {
-		                console.log('Success: ' + JSON.stringify(result[0]));
-		            //    res.send(result[0]);
-		            }
+                  console.log(err);
+                   // res.send({'error':'An error has occurred'});
+                } else {
+                    console.log('Success: ' + JSON.stringify(result));
+                //    res.send(result[0]);
+                }
            // db.close();
-        	});
+          });
 		   
   });
 });

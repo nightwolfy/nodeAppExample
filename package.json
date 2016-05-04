@@ -4,6 +4,8 @@
   "dependencies": {
     "express": "^4.13.4",
     "gulp": "latest",
-    "mongodb": "^2.1.16"
+    "handlebars": "^4.0.5",
+    "mongodb": "^2.1.16",
+    "pug": "^2.0.0-alpha6"
   }
 }
