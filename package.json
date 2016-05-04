@@ -5,7 +5,9 @@
     "express": "^4.13.4",
     "gulp": "latest",
     "handlebars": "^4.0.5",
+    "hbs": "^4.0.0",
     "mongodb": "^2.1.16",
-    "pug": "^2.0.0-alpha6"
+    "pug": "^2.0.0-alpha6",
+    "socket.io": "^1.4.6"
   }
 }
